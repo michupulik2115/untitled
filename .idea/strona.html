@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCMS - Logowanie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        #container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #welcome {
+            display: none;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            color: green;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>Logowanie</h1>
+    <div id="error-message" class="error-message" style="display: none;"></div>
+    <div id="success-message" class="success-message" style="display: none;"></div>
+    <form id="login-form" onsubmit="return loginUser()">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Zaloguj</button>
+    </form>
+
+    <div id="welcome">
+        <h2>Witaj, <span id="user"></span>!</h2>
+        <button onclick="logoutUser()">Wyloguj</button>
+    </div>
+
+    <div id="register-form" style="display: none;">
+        <h2>Utwórz nowe konto</h2>
+        <form onsubmit="return registerUser()">
+            <label for="new-username">Nowa nazwa użytkownika:</label>
+            <input type="text" id="new-username" name="new-username" required>
+            <label for="new-password">Nowe hasło:</label>
+            <input type="password" id="new-password" name="new-password" required>
+            <button type="submit">Utwórz konto</button>
+        </form>
+    </div>
+</div>
+
+<script>
+        let loggedInUser = null;
+        const storedUsername = localStorage.getItem('username');
+        const storedPassword = localStorage.getItem('password');
+
+        if (storedUsername && storedPassword) {
+            document.getElementById('username').value = storedUsername;
+            document.getElementById('password').value = storedPassword;
+            loginUser();
+        }
+
+        function loginUser() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === storedUsername && password === storedPassword) {
+                loggedInUser = username;
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('welcome').style.display = 'block';
+                document.getElementById('user').innerText = username;
+                document.getElementById('success-message').innerText = 'Zalogowano pomyślnie.';
+                document.getElementById('success-message').style.display = 'block';
+                return false;
+            } else {
+                document.getElementById('error-message').innerText = 'Nieprawidłowa nazwa użytkownika lub hasło.';
+                document.getElementById('error-message').style.display = 'block';
+                return false;
+            }
+        }
+
+        function logoutUser() {
+            loggedInUser = null;
+            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function registerUser() {
+            const newUsername = document.getElementById('new-username').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            localStorage.setItem('username', newUsername);
+            localStorage.setItem('password', newPassword);
+
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+
+            document.getElementById('username').value = newUsername;
+            document.getElementById('password').value = newPassword;
+
+            alert('Konto zostało utworzone pomyślnie. Teraz możesz się zalogować.');
+
+            return false;
+        }
+
+        function showRegisterForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+    </script>
+<div style="text-align:center;margin-top:20px;"><button onclick="showRegisterForm()">Zarejestruj nowe konto</button></div>
+</body>
+</html>
+
+
+
+
